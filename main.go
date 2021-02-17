@@ -23,11 +23,35 @@ func main() {
 func newRouter() *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/", homeHandler).Methods("GET")
+	r.HandleFunc("/blog", blogHandler).Methods("GET")
+	r.HandleFunc("/gallery", galleryHandler).Methods("GET")
+	r.HandleFunc("/projects", projectsHandler).Methods("GET")
 	return r
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	err := templates.ExecuteTemplate(w, "home.html", nil)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func blogHandler(w http.ResponseWriter, r *http.Request) {
+	err := templates.ExecuteTemplate(w, "blog.html", nil)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func galleryHandler(w http.ResponseWriter, r *http.Request) {
+	err := templates.ExecuteTemplate(w, "gallery.html", nil)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func projectsHandler(w http.ResponseWriter, r *http.Request) {
+	err := templates.ExecuteTemplate(w, "projects.html", nil)
 	if err != nil {
 		log.Println(err)
 	}
