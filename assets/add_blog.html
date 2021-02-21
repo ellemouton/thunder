@@ -1,0 +1,20 @@
+{{ template "header.html" . }}
+
+<div class="container">
+	<h1>New Blog</h1>
+	<form action="/blog/add" method="post">
+		
+		<label>Title</label>
+		<input type="text" name="title" placeholder="Title here..." required>
+
+		<label>Abstract</label>
+		<input type="text" name="abstract" placeholder="Awesome abstract here..." required>
+
+		<label>Content</label>
+		<textArea name="content" placeholder="Brain nonsense here..." style="height:300px" required></textArea>
+	
+		<input type="submit" value="Post!">
+	</form>
+</div>
+
+{{ template "footer.html" . }}

@@ -1,0 +1,15 @@
+{{ template "header.html" .}}
+
+<div class="container">
+  	{{range .Payload }}
+	<a href="/blog/view/{{.ID}}">
+		<div class="blog">
+			<h2>{{.Name}}</h2>
+			<p>{{.Description}}</p>
+			<p>{{.CreatedAt}}</p>
+		</div>
+	</a>
+  	{{end}}
+</div>
+
+{{ template "footer.html" .}}

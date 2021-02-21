@@ -1,7 +1,11 @@
 {{ template "header.html" .}}
 
 <div class="container">
-	{{.Text}}
+	<h1>{{.Name}}</h1>
+	<p class="description">{{.Abstract}}</p>
+	<p class="description">{{.Date}}</p>
+	<p class="atext">{{.Content}}</p>
 </div>
+
 
 {{ template "footer.html" .}}
