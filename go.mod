@@ -7,4 +7,5 @@ require (
 	github.com/gomarkdown/markdown v0.0.0-20210208175418-bda154fe17d8
 	github.com/gorilla/mux v1.8.0
 	github.com/stretchr/testify v1.7.0
+	github.com/yuin/goldmark v1.3.2
 )
