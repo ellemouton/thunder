@@ -11,12 +11,16 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/ellemouton/thunder/blogs"
 	blogs_db "github.com/ellemouton/thunder/blogs/db"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 )
+
+// TODO(elle): Do better protection
+const pssedstr = "$2a$10$LJLTJe93TOhoRhD.ZTyi6.Crdskdx4XJdbf1IueI/7BN9wyJNc6BG"
 
 func newRouter(s *State) *mux.Router {
 	r := mux.NewRouter()
@@ -61,6 +65,13 @@ func (s *State) saveEditBlogHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
 	abstract := r.FormValue("abstract")
 	content := r.FormValue("content")
+	password := r.FormValue("password")
+
+	err = bcrypt.CompareHashAndPassword([]byte(pssedstr), []byte(password))
+	if err != nil {
+		http.Error(w, fmt.Sprintf("incorrect password, %s", err), http.StatusInternalServerError)
+		return
+	}
 
 	err = blogs_db.UpdateBlog(ctx, s.GetDB(), id, title, abstract, content)
 	if err != nil {
@@ -258,8 +269,15 @@ func (s *State) newBlogHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
 	abstract := r.FormValue("abstract")
 	content := r.FormValue("content")
+	password := r.FormValue("password")
 
-	_, err := blogs_db.Create(ctx, s.GetDB(), title, abstract, content)
+	err := bcrypt.CompareHashAndPassword([]byte(pssedstr), []byte(password))
+	if err != nil {
+		http.Error(w, fmt.Sprintf("incorrect password, %s", err), http.StatusInternalServerError)
+		return
+	}
+
+	_, err = blogs_db.Create(ctx, s.GetDB(), title, abstract, content)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
