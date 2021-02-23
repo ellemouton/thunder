@@ -12,8 +12,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var dbAddr = flag.String("db_address", "root:@(127.0.0.1:3306)/thunder?parseTime=true", "Address of the mysql DB")
-var testDbAddr = flag.String("test_db_address", "root:@(127.0.0.1:3306)/test?parseTime=true", "Address of test mysql DB")
+var dbAddr = flag.String("db_address", "thunder:@(127.0.0.1:3306)/thunder?parseTime=true", "Address of the mysql DB")
+var testDbAddr = flag.String("test_db_address", "thunder:@(127.0.0.1:3306)/test?parseTime=true", "Address of test mysql DB")
 var schemaPath = "/schema.sql"
 
 func Connect() (*sql.DB, error) {
