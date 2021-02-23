@@ -12,7 +12,7 @@ var templates = template.Must(template.ParseGlob("assets/*.html"))
 func main() {
 	s, err := newState()
 	if err != nil {
-		log.Fatal("newState: %s", err)
+		log.Fatalf("newState: %s", err)
 	}
 
 	r := newRouter(s)

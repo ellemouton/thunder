@@ -23,7 +23,7 @@ func newRouter(s *State) *mux.Router {
 
 	r.HandleFunc("/", s.homeHandler).Methods("GET")
 	r.HandleFunc("/blog", s.blogHandler).Methods("GET")
-	r.HandleFunc("/blog/view/{id}", s.blogShowHandlerv2).Methods("GET")
+	r.HandleFunc("/blog/view/{id}", s.blogShowHandler).Methods("GET")
 	r.HandleFunc("/gallery", s.galleryHandler).Methods("GET")
 	r.HandleFunc("/projects", s.projectsHandler).Methods("GET")
 	r.PathPrefix("/images").Handler(http.StripPrefix("/images", http.FileServer(http.Dir("assets/images"))))
@@ -113,7 +113,7 @@ func (s *State) editBlogHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *State) blogShowHandlerv2(w http.ResponseWriter, r *http.Request) {
+func (s *State) blogShowHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	vars := mux.Vars(r)
 
@@ -138,7 +138,8 @@ func (s *State) blogShowHandlerv2(w http.ResponseWriter, r *http.Request) {
 	md := goldmark.New(goldmark.WithExtensions(extension.GFM))
 	var buf bytes.Buffer
 	if err := md.Convert([]byte(content.Text), &buf); err != nil {
-		panic(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	c := struct {

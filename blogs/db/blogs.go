@@ -81,12 +81,17 @@ func ListAllInfo(ctx context.Context, dbc *sql.DB) (infos []*blogs.Info, err err
 }
 
 func UpdateBlog(ctx context.Context, dbc *sql.DB, id int64, name, abstract, content string) error {
+	info, err := LookupInfo(ctx, dbc, id)
+	if err != nil {
+		return err
+	}
+
 	tx, err := dbc.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
 
-	_, err = tx.ExecContext(ctx, "update articles_content set text=?", content)
+	_, err = tx.ExecContext(ctx, "update articles_content set text=? where id=?", content, info.ContentID)
 	if err != nil {
 		return err
 	}
