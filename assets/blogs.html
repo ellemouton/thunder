@@ -1,5 +1,9 @@
 {{ template "header.html" .}}
 
+<div class="title">
+	<h1>My Brain Nonsense</h1>
+</div>
+
 <div class="container">
   	{{range .Payload }}
 	<a href="/blog/view/{{.ID}}">
