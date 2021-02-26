@@ -62,8 +62,8 @@ func LookupContent(ctx context.Context, dbc *sql.DB, id int64) (*blogs.Content, 
 	return &content, nil
 }
 
-func ListAllInfo(ctx context.Context, dbc *sql.DB) (infos []*blogs.Info, err error) {
-	rows, err := dbc.Query("select * from articles_info")
+func ListAllInfoRev(ctx context.Context, dbc *sql.DB) (infos []*blogs.Info, err error) {
+	rows, err := dbc.Query("select * from articles_info order by id desc")
 	if err != nil {
 		return nil, err
 	}

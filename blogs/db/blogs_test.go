@@ -50,18 +50,21 @@ func TestListAllInfos(t *testing.T) {
 	dbc := db.ConnectForTesting(t)
 	ctx := context.Background()
 
-	_, err := Create(ctx, dbc, "title", "the dash", "blah blah blah")
+	id1, err := Create(ctx, dbc, "title", "the dash", "blah blah blah")
 	require.NoError(t, err)
 
-	_, err = Create(ctx, dbc, "title", "the dash", "blah blah blah")
+	id2, err := Create(ctx, dbc, "title", "the dash", "blah blah blah")
 	require.NoError(t, err)
 
-	_, err = Create(ctx, dbc, "title", "the dash", "blah blah blah")
+	id3, err := Create(ctx, dbc, "title", "the dash", "blah blah blah")
 	require.NoError(t, err)
 
-	infos, err := ListAllInfo(ctx, dbc)
+	infos, err := ListAllInfoRev(ctx, dbc)
 	require.NoError(t, err)
 	require.Equal(t, len(infos), 3)
+	require.Equal(t, id3, infos[0].ID)
+	require.Equal(t, id2, infos[1].ID)
+	require.Equal(t, id1, infos[2].ID)
 }
 
 func TestUpdateBlog(t *testing.T) {

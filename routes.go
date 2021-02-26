@@ -175,7 +175,7 @@ func (s *State) blogShowHandler(w http.ResponseWriter, r *http.Request) {
 func (s *State) blogHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
-	bls, err := blogs_db.ListAllInfo(ctx, s.GetDB())
+	bls, err := blogs_db.ListAllInfoRev(ctx, s.GetDB())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
