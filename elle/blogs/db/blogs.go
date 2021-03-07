@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/ellemouton/thunder/blogs"
+	"github.com/ellemouton/thunder/elle/blogs"
 )
 
 func Create(ctx context.Context, dbc *sql.DB, name, description string, text string) (int64, error) {

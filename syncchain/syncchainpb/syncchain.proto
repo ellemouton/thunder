@@ -1,0 +1,17 @@
+syntax="proto3";
+
+package syncchainpb;
+
+service Syncchain {
+        rpc Ping(PingRequest) returns (PingResponse) {}
+}       
+
+message Empty {}
+
+message PingRequest {
+        string msg = 1;
+}
+
+message PingResponse {
+        string msg = 1;
+}

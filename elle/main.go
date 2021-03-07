@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+
+	"github.com/ellemouton/thunder/elle/ops"
 )
 
 var templates = template.Must(template.ParseGlob("assets/*.html"))
@@ -14,6 +16,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("newState: %s", err)
 	}
+
+	ops.StartLoops(s)
 
 	r := newRouter(s)
 

@@ -13,8 +13,8 @@ import (
 	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/ellemouton/thunder/blogs"
-	blogs_db "github.com/ellemouton/thunder/blogs/db"
+	"github.com/ellemouton/thunder/elle/blogs"
+	blogs_db "github.com/ellemouton/thunder/elle/blogs/db"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 )
