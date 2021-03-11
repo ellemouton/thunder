@@ -15,12 +15,13 @@ import (
 
 	"github.com/ellemouton/thunder/elle/blogs"
 	blogs_db "github.com/ellemouton/thunder/elle/blogs/db"
+	"github.com/ellemouton/thunder/elle/passwd"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 )
 
 // TODO(elle): Do better protection
-const pssedstr = "$2a$10$LJLTJe93TOhoRhD.ZTyi6.Crdskdx4XJdbf1IueI/7BN9wyJNc6BG"
+//const pssedstr = "$2a$10$LJLTJe93TOhoRhD.ZTyi6.Crdskdx4XJdbf1IueI/7BN9wyJNc6BG"
 
 func newRouter(s *State) *mux.Router {
 	r := mux.NewRouter()
@@ -67,10 +68,13 @@ func (s *State) saveEditBlogHandler(w http.ResponseWriter, r *http.Request) {
 	content := r.FormValue("content")
 	password := r.FormValue("password")
 
-	err = bcrypt.CompareHashAndPassword([]byte(pssedstr), []byte(password))
-	if err != nil {
-		http.Error(w, fmt.Sprintf("incorrect password, %s", err), http.StatusInternalServerError)
-		return
+	protected, pssedstr := passwd.Protected()
+	if protected {
+		err = bcrypt.CompareHashAndPassword([]byte(pssedstr), []byte(password))
+		if err != nil {
+			http.Error(w, fmt.Sprintf("incorrect password, %s", err), http.StatusInternalServerError)
+			return
+		}
 	}
 
 	err = blogs_db.UpdateBlog(ctx, s.GetDB(), id, title, abstract, content)
@@ -211,13 +215,16 @@ func (s *State) newBlogHandler(w http.ResponseWriter, r *http.Request) {
 	content := r.FormValue("content")
 	password := r.FormValue("password")
 
-	err := bcrypt.CompareHashAndPassword([]byte(pssedstr), []byte(password))
-	if err != nil {
-		http.Error(w, fmt.Sprintf("incorrect password, %s", err), http.StatusInternalServerError)
-		return
+	protected, pssedstr := passwd.Protected()
+	if protected {
+		err := bcrypt.CompareHashAndPassword([]byte(pssedstr), []byte(password))
+		if err != nil {
+			http.Error(w, fmt.Sprintf("incorrect password, %s", err), http.StatusInternalServerError)
+			return
+		}
 	}
 
-	_, err = blogs_db.Create(ctx, s.GetDB(), title, abstract, content)
+	_, err := blogs_db.Create(ctx, s.GetDB(), title, abstract, content)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
