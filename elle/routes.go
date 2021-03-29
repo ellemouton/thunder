@@ -20,13 +20,11 @@ import (
 	"github.com/yuin/goldmark/extension"
 )
 
-// TODO(elle): Do better protection
-//const pssedstr = "$2a$10$LJLTJe93TOhoRhD.ZTyi6.Crdskdx4XJdbf1IueI/7BN9wyJNc6BG"
-
 func newRouter(s *State) *mux.Router {
 	r := mux.NewRouter()
 
-	r.HandleFunc("/", s.homeHandler).Methods("GET")
+	// r.HandleFunc("/", s.homeHandler).Methods("GET")
+	r.HandleFunc("/", s.blogHandler).Methods("GET")
 	r.HandleFunc("/blog", s.blogHandler).Methods("GET")
 	r.HandleFunc("/blog/view/{id}", s.blogShowHandler).Methods("GET")
 	r.HandleFunc("/gallery", s.galleryHandler).Methods("GET")
