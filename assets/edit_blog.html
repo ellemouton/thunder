@@ -10,6 +10,9 @@
 		<label>Abstract</label>
 		<input type="text" name="abstract" value="{{.Abstract}}" required>
 
+		<label>Price (in satoshis) </label>
+		<input type="number" name="price" value={{.Price}} min="0" required>
+
 		<label>Content</label>
 		<textArea name="content" style="height:300px" required>{{.Content}}</textArea>
 	

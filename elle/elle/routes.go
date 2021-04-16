@@ -31,6 +31,7 @@ func newRouter(s *State) *mux.Router {
 	r.HandleFunc("/projects", s.projectsHandler).Methods("GET")
 	r.PathPrefix("/images").Handler(http.StripPrefix("/images", http.FileServer(http.Dir("assets/images"))))
 	r.PathPrefix("/css").Handler(http.StripPrefix("/css", http.FileServer(http.Dir("assets/css"))))
+	r.PathPrefix("/js").Handler(http.StripPrefix("/js", http.FileServer(http.Dir("assets/js"))))
 	r.HandleFunc("/cv", func(w http.ResponseWriter, r *http.Request) { http.ServeFile(w, r, "assets/other/CV_Elle_Mouton.pdf") }).Methods("GET")
 
 	// Hidden endpoints
@@ -64,7 +65,14 @@ func (s *State) saveEditBlogHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
 	abstract := r.FormValue("abstract")
 	content := r.FormValue("content")
+	priceStr := r.FormValue("price")
 	password := r.FormValue("password")
+
+	price, err := strconv.ParseInt(priceStr, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	protected, pssedstr := passwd.Protected()
 	if protected {
@@ -75,7 +83,7 @@ func (s *State) saveEditBlogHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	err = blogs_db.UpdateBlog(ctx, s.GetDB(), id, title, abstract, content)
+	err = blogs_db.UpdateBlog(ctx, s.GetDB(), id, title, abstract, content, price)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -111,11 +119,13 @@ func (s *State) editBlogHandler(w http.ResponseWriter, r *http.Request) {
 		Name     string
 		Abstract string
 		Date     time.Time
+		Price    int64
 		Content  string
 	}{
 		ID:       id,
 		Name:     info.Name,
 		Abstract: info.Description,
+		Price:    info.Price,
 		Content:  content.Text,
 	}
 
@@ -159,12 +169,14 @@ func (s *State) blogShowHandler(w http.ResponseWriter, r *http.Request) {
 		Name     string
 		Abstract string
 		Date     time.Time
+		Price    int64
 		Content  template.HTML
 	}{
 		Name:     info.Name,
 		Abstract: info.Description,
 		Date:     info.CreatedAt,
-		Content:  template.HTML(string(buf.Bytes())),
+		Price:    info.Price,
+		Content:  template.HTML(buf.Bytes()),
 	}
 
 	err = templates.ExecuteTemplate(w, "blog.html", c)
@@ -211,7 +223,14 @@ func (s *State) newBlogHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
 	abstract := r.FormValue("abstract")
 	content := r.FormValue("content")
+	priceStr := r.FormValue("price")
 	password := r.FormValue("password")
+
+	price, err := strconv.ParseInt(priceStr, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	protected, pssedstr := passwd.Protected()
 	if protected {
@@ -222,7 +241,7 @@ func (s *State) newBlogHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	_, err := blogs_db.Create(ctx, s.GetDB(), title, abstract, content)
+	_, err = blogs_db.Create(ctx, s.GetDB(), title, abstract, content, price)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

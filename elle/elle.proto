@@ -1,0 +1,20 @@
+syntax="proto3";
+
+package ellepb;
+
+option go_package = "./ellepb";
+
+service Elle {
+        rpc RequiresPayment(RequiresPaymentRequest) returns (RequiresPaymentResponse) {}
+}
+
+message RequiresPaymentRequest {
+        string path = 1;
+}
+
+message RequiresPaymentResponse {
+        int64 id = 1;
+        bool requires_payment = 2;
+        int64 price = 3;
+        string memo = 4;
+}

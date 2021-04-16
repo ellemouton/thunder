@@ -8,7 +8,7 @@ import (
 	"github.com/ellemouton/thunder/elle/blogs"
 )
 
-func Create(ctx context.Context, dbc *sql.DB, name, description string, text string) (int64, error) {
+func Create(ctx context.Context, dbc *sql.DB, name, description string, text string, price int64) (int64, error) {
 	tx, err := dbc.BeginTx(ctx, nil)
 	if err != nil {
 		return 0, err
@@ -24,8 +24,8 @@ func Create(ctx context.Context, dbc *sql.DB, name, description string, text str
 		return 0, err
 	}
 
-	res, err = tx.ExecContext(ctx, "insert into articles_info set name=?, description=?, "+
-		"created_at=?, content_id=?", name, description, time.Now(), contentID)
+	res, err = tx.ExecContext(ctx, "insert into articles_info set name=?, description=?, " +
+		" price=?, created_at=?, content_id=?", name, description, price, time.Now(), contentID)
 	if err != nil {
 		return 0, err
 	}
@@ -42,7 +42,10 @@ func LookupInfo(ctx context.Context, dbc *sql.DB, id int64) (*blogs.Info, error)
 	row := dbc.QueryRowContext(ctx, "select * from articles_info where id=?", id)
 
 	var info blogs.Info
-	err := row.Scan(&info.ID, &info.Name, &info.Description, &info.CreatedAt, &info.ContentID)
+	err := row.Scan(
+		&info.ID, &info.Name, &info.Description, &info.CreatedAt,
+		&info.ContentID, &info.Price,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +66,7 @@ func LookupContent(ctx context.Context, dbc *sql.DB, id int64) (*blogs.Content, 
 }
 
 func ListAllInfoRev(ctx context.Context, dbc *sql.DB) (infos []*blogs.Info, err error) {
-	rows, err := dbc.Query("select * from articles_info order by id desc")
+	rows, err := dbc.QueryContext(ctx, "select * from articles_info order by id desc")
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +74,8 @@ func ListAllInfoRev(ctx context.Context, dbc *sql.DB) (infos []*blogs.Info, err 
 
 	for rows.Next() {
 		info := blogs.Info{}
-		err = rows.Scan(&info.ID, &info.Name, &info.Description, &info.CreatedAt, &info.ContentID)
+		err = rows.Scan(&info.ID, &info.Name, &info.Description, &info.CreatedAt,
+			&info.ContentID, &info.Price)
 		if err != nil {
 			return nil, err
 		}
@@ -80,7 +84,7 @@ func ListAllInfoRev(ctx context.Context, dbc *sql.DB) (infos []*blogs.Info, err 
 	return infos, rows.Err()
 }
 
-func UpdateBlog(ctx context.Context, dbc *sql.DB, id int64, name, abstract, content string) error {
+func UpdateBlog(ctx context.Context, dbc *sql.DB, id int64, name, abstract, content string, price int64) error {
 	info, err := LookupInfo(ctx, dbc, id)
 	if err != nil {
 		return err
@@ -91,12 +95,14 @@ func UpdateBlog(ctx context.Context, dbc *sql.DB, id int64, name, abstract, cont
 		return err
 	}
 
-	_, err = tx.ExecContext(ctx, "update articles_content set text=? where id=?", content, info.ContentID)
+	_, err = tx.ExecContext(ctx, "update articles_content set text=? " +
+		"where id=?", content, info.ContentID)
 	if err != nil {
 		return err
 	}
 
-	_, err = tx.ExecContext(ctx, "update articles_info set name=?, description=? where id=?", name, abstract, id)
+	_, err = tx.ExecContext(ctx, "update articles_info set name=?, " +
+		"description=?, price=? where id=?", name, abstract, price, id)
 	if err != nil {
 		return err
 	}
