@@ -7,7 +7,7 @@
 <div class="container">
   	{{range .Payload }}
 	<!--<a href="/blog/view/{{.ID}}">-->
-	<a onclick="getLSAT({{.ID}})" href="#">
+	<a onclick="getLSAT({{.ID}})" href="/blog/view/{{.ID}}">
 		<div class="blog">
 			<h2>{{.Name}}</h2>
 			<p>{{.Description}}</p>

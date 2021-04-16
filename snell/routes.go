@@ -141,7 +141,7 @@ func (s * State) paymentHandler(w http.ResponseWriter, r *http.Request, details 
                 Invoice: invoice.PaymentRequest,
                 Macaroon: macString,
         }
-        fmt.Println(c.ID)
+
         err = templates.ExecuteTemplate(w, "payment.html", c)
         if err != nil {
                 http.Error(w, err.Error(), http.StatusInternalServerError)
