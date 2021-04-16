@@ -9,9 +9,9 @@ create table if not exists articles_info (
     id int auto_increment,
     name varchar(255) not null,
     description text not null,
-    price int not null,
     created_at datetime not null,
     content_id int not null,
+    price int not null,
 
     primary key (id)
 );

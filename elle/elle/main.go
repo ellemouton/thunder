@@ -19,7 +19,7 @@ var (
 
 func main() {
 	flag.Parse()
-	
+
 	s, err := newState()
 	if err != nil {
 		log.Fatalf("newState: %s", err)
