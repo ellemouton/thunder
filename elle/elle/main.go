@@ -11,9 +11,15 @@ import (
 	"net/http"
 )
 
-var templates = template.Must(template.ParseGlob("assets/*.html"))
+var (
+	templates = template.Must(template.ParseGlob("assets/*.html"))
+	httpAddr = flag.String("httpAddr", ":8080", "address to serve on")
+	grpcAddr = flag.String("grpc_address", ":8082", "elle grpc address")
+)
 
 func main() {
+	flag.Parse()
+	
 	s, err := newState()
 	if err != nil {
 		log.Fatalf("newState: %s", err)
@@ -25,11 +31,9 @@ func main() {
 
 	go serverGRPCForever(s)
 
-	log.Println("Serving on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Printf("Serving on port %s", *httpAddr)
+	log.Fatal(http.ListenAndServe(*httpAddr, r))
 }
-
-var grpcAddr = flag.String("grpc_address", ":8082", "elle grpc address")
 
 func serverGRPCForever(s *State) {
 	lis, err := net.Listen("tcp", *grpcAddr)
