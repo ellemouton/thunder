@@ -6,13 +6,13 @@
 
 <div class="container">
   	{{range .Payload }}
-	<!--<a href="/blog/view/{{.ID}}">-->
-	<a onclick="getLSAT({{.ID}})" href="/blog/view/{{.ID}}">
+	<a href="/blog/view/{{.ID}}">
+	<!--<a onclick="getLSAT({{.ID}})" href="/blog/view/{{.ID}}">-->
 		<div class="blog">
 			<h2>{{.Name}}</h2>
 			<p>{{.Description}}</p>
 			<p>{{.CreatedAt}}</p>
-			<p class="price">Price: {{.Price}} satoshis</p>
+			<!--<p class="price">Price: {{.Price}} satoshis</p>-->
 		</div>
 	</a>
   	{{end}}
